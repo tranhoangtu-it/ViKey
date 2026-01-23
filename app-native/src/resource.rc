@@ -1,0 +1,123 @@
+﻿// ViKey - Win32 Resources
+// resource.rc
+
+#pragma code_page(65001)
+
+#include <windows.h>
+#include "resource.h"
+
+// Version Info
+VS_VERSION_INFO VERSIONINFO
+FILEVERSION 1,2,0,0
+PRODUCTVERSION 1,2,0,0
+FILEFLAGSMASK 0x3fL
+FILEFLAGS 0x0L
+FILEOS VOS_NT_WINDOWS32
+FILETYPE VFT_APP
+FILESUBTYPE 0x0L
+BEGIN
+    BLOCK "StringFileInfo"
+    BEGIN
+        BLOCK "040904b0"
+        BEGIN
+            VALUE "CompanyName", "ViKey"
+            VALUE "FileDescription", "ViKey - Nhẹ, nhanh, chuẩn Việt"
+            VALUE "FileVersion", "1.2.0"
+            VALUE "InternalName", "ViKey"
+            VALUE "LegalCopyright", "Copyright (C) 2026"
+            VALUE "OriginalFilename", "ViKey.exe"
+            VALUE "ProductName", "ViKey"
+            VALUE "ProductVersion", "1.2.0"
+        END
+    END
+    BLOCK "VarFileInfo"
+    BEGIN
+        VALUE "Translation", 0x409, 1200
+    END
+END
+
+// Tray Context Menu
+IDM_TRAY_MENU MENU
+BEGIN
+    POPUP "TrayMenu"
+    BEGIN
+        MENUITEM "Tiếng Việt (VN)", IDM_TOGGLE_ENABLED, CHECKED
+        MENUITEM SEPARATOR
+        MENUITEM "Telex", IDM_METHOD_TELEX, CHECKED
+        MENUITEM "VNI", IDM_METHOD_VNI
+        MENUITEM SEPARATOR
+        MENUITEM "Cài đặt...", IDM_SETTINGS
+        MENUITEM "Giới thiệu", IDM_ABOUT
+        MENUITEM SEPARATOR
+        MENUITEM "Thoát", IDM_EXIT
+    END
+END
+
+// Settings Dialog
+IDD_SETTINGS DIALOGEX 0, 0, 320, 380
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Cài đặt"
+FONT 9, "Segoe UI", 400, 0, 0x1
+BEGIN
+    // Row 1: Kiểu gõ | Hệ thống | Phím chuyển (3 columns)
+    GROUPBOX "Kiểu gõ", -1, 7, 7, 70, 50
+    AUTORADIOBUTTON "Telex", IDC_RADIO_TELEX, 15, 22, 50, 10, WS_GROUP
+    AUTORADIOBUTTON "VNI", IDC_RADIO_VNI, 15, 36, 50, 10
+
+    GROUPBOX "Hệ thống", -1, 82, 7, 100, 50
+    AUTOCHECKBOX "Khởi động cùng Win", IDC_CHECK_AUTOSTART, 90, 22, 85, 10
+    AUTOCHECKBOX "Ẩn khi khởi động", IDC_CHECK_SILENT, 90, 36, 85, 10
+
+    GROUPBOX "Phím chuyển", -1, 187, 7, 126, 50
+    AUTOCHECKBOX "Ctrl", IDC_CHECK_HOTKEY_CTRL, 195, 22, 30, 10
+    AUTOCHECKBOX "Shift", IDC_CHECK_HOTKEY_SHIFT, 228, 22, 35, 10
+    AUTOCHECKBOX "Alt", IDC_CHECK_HOTKEY_ALT, 266, 22, 25, 10
+    AUTOCHECKBOX "Win", IDC_CHECK_HOTKEY_WIN, 195, 36, 30, 10
+    EDITTEXT IDC_EDIT_HOTKEY, 230, 34, 45, 14, ES_AUTOHSCROLL | ES_UPPERCASE
+
+    // Options Group (full width below row 1)
+    GROUPBOX "Tuỳ chọn", -1, 7, 62, 306, 55
+    AUTOCHECKBOX "Bỏ dấu kiểu mới", IDC_CHECK_MODERN, 15, 77, 90, 10
+    AUTOCHECKBOX "Tự động khôi phục tiếng Anh", IDC_CHECK_AUTORESTORE, 15, 91, 130, 10
+    AUTOCHECKBOX "Tự động viết hoa", IDC_CHECK_AUTOCAP, 110, 77, 80, 10
+    AUTOCHECKBOX "ESC khôi phục ASCII", IDC_CHECK_ESCRESTORE, 150, 91, 95, 10
+    AUTOCHECKBOX "Bỏ dấu tự do", IDC_CHECK_FREETONE, 195, 77, 65, 10
+    AUTOCHECKBOX "Bỏ qua phím tắt w", IDC_CHECK_SKIPW, 250, 91, 60, 10
+    AUTOCHECKBOX "Dấu ngoặc làm phím tắt", IDC_CHECK_BRACKET, 265, 77, 40, 10
+    AUTOCHECKBOX "Chế độ chậm (terminal)", IDC_CHECK_SLOWMODE, 15, 105, 100, 10
+
+    // Text Shortcuts Group
+    GROUPBOX "Gõ tắt", -1, 7, 122, 306, 220
+    CONTROL "", IDC_LIST_SHORTCUTS, "SysListView32", LVS_REPORT | LVS_SINGLESEL | WS_BORDER | WS_TABSTOP, 15, 137, 290, 155
+    LTEXT "Tắt:", -1, 15, 300, 20, 10
+    EDITTEXT IDC_EDIT_KEY, 35, 298, 70, 14, ES_AUTOHSCROLL
+    LTEXT "Đầy đủ:", -1, 115, 300, 35, 10
+    EDITTEXT IDC_EDIT_VALUE, 150, 298, 90, 14, ES_AUTOHSCROLL
+    PUSHBUTTON "Thêm", IDC_BTN_ADD, 250, 297, 30, 16
+    PUSHBUTTON "Xoá", IDC_BTN_REMOVE, 282, 297, 25, 16
+
+    // Dialog Buttons
+    DEFPUSHBUTTON "Lưu", IDC_BTN_OK, 200, 355, 55, 16
+    PUSHBUTTON "Huỷ", IDC_BTN_CANCEL, 258, 355, 55, 16
+END
+
+// About Dialog
+IDD_ABOUT DIALOGEX 0, 0, 200, 100
+STYLE DS_SETFONT | DS_MODALFRAME | DS_FIXEDSYS | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Giới thiệu"
+FONT 9, "Segoe UI", 400, 0, 0x1
+BEGIN
+    CTEXT "ViKey", -1, 0, 15, 200, 12
+    CTEXT "Phiên bản 1.2.0", -1, 0, 30, 200, 10
+    CTEXT "Nhẹ, nhanh, chuẩn Việt", -1, 0, 50, 200, 10
+    CTEXT "Ctrl+Space để chuyển ngôn ngữ", -1, 0, 65, 200, 10
+    DEFPUSHBUTTON "Đóng", IDOK, 75, 80, 50, 14
+END
+
+// String Table
+STRINGTABLE
+BEGIN
+    IDS_APP_TITLE    "ViKey"
+    IDS_TOOLTIP_VN   "ViKey - Tiếng Việt [VN]\nCtrl+Space để chuyển"
+    IDS_TOOLTIP_EN   "ViKey - Tiếng Anh [EN]\nCtrl+Space để chuyển"
+END

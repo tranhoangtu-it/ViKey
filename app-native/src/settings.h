@@ -1,0 +1,86 @@
+// ViKey - Settings Manager
+// settings.h
+// Persists user settings to Windows Registry
+
+#pragma once
+
+#include <windows.h>
+#include <string>
+#include <vector>
+#include "rust_bridge.h"
+#include "shortcut_manager.h"
+
+// Hotkey configuration for language toggle
+struct HotkeyConfig {
+    bool ctrl = true;
+    bool shift = false;
+    bool alt = false;
+    bool win = false;
+    UINT vkCode = VK_SPACE;  // Virtual key code (default: Space)
+
+    // Get combined modifiers for RegisterHotKey
+    UINT GetModifiers() const {
+        UINT mods = 0x4000;  // MOD_NOREPEAT
+        if (ctrl)  mods |= 0x0002;  // MOD_CONTROL
+        if (shift) mods |= 0x0004;  // MOD_SHIFT
+        if (alt)   mods |= 0x0001;  // MOD_ALT
+        if (win)   mods |= 0x0008;  // MOD_WIN
+        return mods;
+    }
+};
+
+class Settings {
+public:
+    static Settings& Instance();
+
+    // Load all settings from registry
+    void Load();
+
+    // Save all settings to registry
+    void Save();
+
+    // Settings properties
+    bool enabled;
+    InputMethod method;
+    bool modernTone;
+    bool englishAutoRestore;
+    bool autoCapitalize;
+    bool escRestore;
+    bool freeTone;
+    bool skipWShortcut;
+    bool bracketShortcut;
+    bool slowMode;
+    bool autoStart;
+    bool silentStartup;  // Start minimized to tray without notification
+    std::vector<TextShortcut> shortcuts;
+    HotkeyConfig toggleHotkey;  // Configurable toggle hotkey
+
+    // Get default shortcuts
+    static std::vector<TextShortcut> DefaultShortcuts();
+
+    // Auto-start management
+    void SetAutoStart(bool enabled);
+    bool GetAutoStart() const;
+
+private:
+    Settings();
+    ~Settings() = default;
+    Settings(const Settings&) = delete;
+    Settings& operator=(const Settings&) = delete;
+
+    // Registry helpers
+    bool GetBool(const wchar_t* name, bool defaultValue);
+    void SetBool(const wchar_t* name, bool value);
+    int GetInt(const wchar_t* name, int defaultValue);
+    void SetInt(const wchar_t* name, int value);
+    std::wstring GetString(const wchar_t* name, const wchar_t* defaultValue);
+    void SetString(const wchar_t* name, const std::wstring& value);
+
+    // Shortcut serialization
+    void LoadShortcuts();
+    void SaveShortcuts();
+
+    static constexpr const wchar_t* REGISTRY_PATH = L"SOFTWARE\\ViKey";
+    static constexpr const wchar_t* STARTUP_PATH = L"SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Run";
+    static constexpr const wchar_t* APP_NAME = L"ViKey";
+};

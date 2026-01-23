@@ -1,0 +1,21 @@
+# Build outputs
+bin/
+obj/
+dist/
+target/
+
+# .NET WPF app (không sử dụng)
+app/
+
+# IDE
+.vs/
+.vscode/
+*.user
+*.suo
+
+# Logs
+*.log
+
+# OS
+.DS_Store
+Thumbs.db
