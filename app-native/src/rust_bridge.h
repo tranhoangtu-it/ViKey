@@ -105,6 +105,11 @@ public:
     // Enable free tone placement (skip validation)
     void SetFreeTone(bool enabled);
 
+    // Shortcut management
+    void AddShortcut(const wchar_t* trigger, const wchar_t* replacement);
+    void RemoveShortcut(const wchar_t* trigger);
+    void ClearShortcuts();
+
     // Process a keystroke and get the result
     ImeResult ProcessKey(uint16_t keycode, bool caps, bool ctrl);
 
@@ -131,6 +136,9 @@ private:
     using FnBracketShortcut = void(*)(bool);
     using FnEscRestore = void(*)(bool);
     using FnFreeTone = void(*)(bool);
+    using FnAddShortcut = void(*)(const char*, const char*);
+    using FnRemoveShortcut = void(*)(const char*);
+    using FnClearShortcuts = void(*)();
     using FnKey = NativeResult*(*)(uint16_t, bool, bool);
     using FnKeyExt = NativeResult*(*)(uint16_t, bool, bool, bool);
 
@@ -151,6 +159,9 @@ private:
     FnBracketShortcut m_ime_bracket_shortcut;
     FnEscRestore m_ime_esc_restore;
     FnFreeTone m_ime_free_tone;
+    FnAddShortcut m_ime_add_shortcut;
+    FnRemoveShortcut m_ime_remove_shortcut;
+    FnClearShortcuts m_ime_clear_shortcuts;
     FnKey m_ime_key;
     FnKeyExt m_ime_key_ext;
 

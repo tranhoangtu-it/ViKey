@@ -6,6 +6,7 @@
 #include "rust_bridge.h"
 #include <codecvt>
 #include <locale>
+#include <string>
 
 // ImeResult implementation
 ImeResult::ImeResult(ImeAction a, uint8_t bs, uint8_t c, uint8_t f, const uint32_t* ch, size_t len)
@@ -61,6 +62,9 @@ RustBridge::RustBridge()
     , m_ime_bracket_shortcut(nullptr)
     , m_ime_esc_restore(nullptr)
     , m_ime_free_tone(nullptr)
+    , m_ime_add_shortcut(nullptr)
+    , m_ime_remove_shortcut(nullptr)
+    , m_ime_clear_shortcuts(nullptr)
     , m_ime_key(nullptr)
     , m_ime_key_ext(nullptr) {
 }
@@ -104,6 +108,9 @@ bool RustBridge::Initialize() {
     m_ime_bracket_shortcut = (FnBracketShortcut)GetProcAddress(m_hModule, "ime_bracket_shortcut");
     m_ime_esc_restore = (FnEscRestore)GetProcAddress(m_hModule, "ime_esc_restore");
     m_ime_free_tone = (FnFreeTone)GetProcAddress(m_hModule, "ime_free_tone");
+    m_ime_add_shortcut = (FnAddShortcut)GetProcAddress(m_hModule, "ime_add_shortcut");
+    m_ime_remove_shortcut = (FnRemoveShortcut)GetProcAddress(m_hModule, "ime_remove_shortcut");
+    m_ime_clear_shortcuts = (FnClearShortcuts)GetProcAddress(m_hModule, "ime_clear_shortcuts");
     m_ime_key = (FnKey)GetProcAddress(m_hModule, "ime_key");
     m_ime_key_ext = (FnKeyExt)GetProcAddress(m_hModule, "ime_key_ext");
 
@@ -171,6 +178,40 @@ void RustBridge::SetEscRestore(bool enabled) {
 
 void RustBridge::SetFreeTone(bool enabled) {
     if (m_ime_free_tone) m_ime_free_tone(enabled);
+}
+
+void RustBridge::AddShortcut(const wchar_t* trigger, const wchar_t* replacement) {
+    if (!m_ime_add_shortcut || !trigger || !replacement) return;
+
+    // Convert wide strings to UTF-8
+    int triggerLen = WideCharToMultiByte(CP_UTF8, 0, trigger, -1, nullptr, 0, nullptr, nullptr);
+    int replacementLen = WideCharToMultiByte(CP_UTF8, 0, replacement, -1, nullptr, 0, nullptr, nullptr);
+
+    if (triggerLen <= 0 || replacementLen <= 0) return;
+
+    std::string triggerUtf8(triggerLen, 0);
+    std::string replacementUtf8(replacementLen, 0);
+
+    WideCharToMultiByte(CP_UTF8, 0, trigger, -1, &triggerUtf8[0], triggerLen, nullptr, nullptr);
+    WideCharToMultiByte(CP_UTF8, 0, replacement, -1, &replacementUtf8[0], replacementLen, nullptr, nullptr);
+
+    m_ime_add_shortcut(triggerUtf8.c_str(), replacementUtf8.c_str());
+}
+
+void RustBridge::RemoveShortcut(const wchar_t* trigger) {
+    if (!m_ime_remove_shortcut || !trigger) return;
+
+    int triggerLen = WideCharToMultiByte(CP_UTF8, 0, trigger, -1, nullptr, 0, nullptr, nullptr);
+    if (triggerLen <= 0) return;
+
+    std::string triggerUtf8(triggerLen, 0);
+    WideCharToMultiByte(CP_UTF8, 0, trigger, -1, &triggerUtf8[0], triggerLen, nullptr, nullptr);
+
+    m_ime_remove_shortcut(triggerUtf8.c_str());
+}
+
+void RustBridge::ClearShortcuts() {
+    if (m_ime_clear_shortcuts) m_ime_clear_shortcuts();
 }
 
 ImeResult RustBridge::ProcessKey(uint16_t keycode, bool caps, bool ctrl) {

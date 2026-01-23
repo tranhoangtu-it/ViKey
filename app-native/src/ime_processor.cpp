@@ -78,7 +78,19 @@ void ImeProcessor::ApplySettings() {
 }
 
 void ImeProcessor::UpdateShortcuts() {
-    ShortcutManager::Instance().SetShortcuts(Settings::Instance().shortcuts);
+    const auto& shortcuts = Settings::Instance().shortcuts;
+
+    // Update native shortcut manager (for SPACE expansion)
+    ShortcutManager::Instance().SetShortcuts(shortcuts);
+
+    // Sync shortcuts to Rust engine (for punctuation expansion)
+    RustBridge& bridge = RustBridge::Instance();
+    bridge.ClearShortcuts();
+    for (const auto& s : shortcuts) {
+        if (!s.key.empty() && !s.value.empty()) {
+            bridge.AddShortcut(s.key.c_str(), s.value.c_str());
+        }
+    }
 }
 
 void ImeProcessor::OnKeyPressed(KeyEventData& event) {
