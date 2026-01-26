@@ -19,3 +19,7 @@ app/
 # OS
 .DS_Store
 Thumbs.db
+
+# macOS build artifacts
+app-macos/build/
+app-macos/ViKey/lib/
