@@ -1,3 +1,7 @@
+<p align="center">
+  <img src="V.png" alt="ViKey Logo" width="128">
+</p>
+
 # ViKey - Bộ gõ tiếng Việt đa nền tảng
 
 Bộ gõ tiếng Việt nhẹ, nhanh, chuẩn cho **Windows**, **macOS** và **Linux**.
@@ -6,7 +10,7 @@ Bộ gõ tiếng Việt nhẹ, nhanh, chuẩn cho **Windows**, **macOS** và **L
 
 | Nền tảng | Phiên bản | Tải |
 |----------|-----------|-----|
-| Windows 10/11 (64-bit) | v1.2.0 | [ViKey-v1.2.0-win64.zip](https://github.com/kmis8x/ViKey/releases/latest) |
+| Windows 10/11 (64-bit) | v1.3.0 | [ViKey-v1.3.0-win64.zip](https://github.com/kmis8x/ViKey/releases/latest) |
 | macOS (Apple Silicon) | v1.2.1 | [ViKey-macOS-arm64.zip](https://github.com/kmis8x/ViKey/releases/latest) |
 | Linux x86_64 (IBus) | v1.0.0 | [ViKey-Linux-x86_64.zip](https://github.com/kmis8x/ViKey/releases/latest) |
 
@@ -26,7 +30,7 @@ Bộ gõ tiếng Việt nhẹ, nhanh, chuẩn cho **Windows**, **macOS** và **L
 
 ### Windows
 
-1. Tải `ViKey-v1.2.0-win64.zip`
+1. Tải `ViKey-v1.3.0-win64.zip`
 2. Giải nén vào thư mục bất kỳ
 3. Chạy `ViKey.exe`
 
