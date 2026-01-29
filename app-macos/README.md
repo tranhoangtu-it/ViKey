@@ -109,14 +109,50 @@ killall -HUP SystemUIServer
 | `4` | ngã |
 | `5` | nặng |
 
-## Cài đặt mặc định
+## Cài đặt
 
-| Tùy chọn | Mặc định |
-|----------|----------|
-| Kiểu gõ | Telex |
-| Bỏ dấu kiểu mới | Bật (hoà thay vì hòa) |
-| ESC khôi phục | Bật |
-| Tự động khôi phục tiếng Anh | Bật |
+Settings được lưu trong UserDefaults với domain `vn.vikey.inputmethod`.
+
+### Các tùy chọn
+
+| Tùy chọn | Key | Mặc định | Mô tả |
+|----------|-----|----------|-------|
+| Kiểu gõ | `InputMethod` | 0 (Telex) | 0=Telex, 1=VNI |
+| Bỏ dấu kiểu mới | `ModernTone` | true | hoà vs hòa |
+| ESC khôi phục | `EscRestore` | true | ESC khôi phục ASCII |
+| Tự động khôi phục tiếng Anh | `EnglishAutoRestore` | true | text → tẽt → text |
+| Tự động viết hoa | `AutoCapitalize` | false | Viết hoa sau dấu câu |
+| Bỏ dấu tự do | `FreeTone` | false | Cho phép dấu bất kỳ |
+| Bỏ qua phím tắt w | `SkipWShortcut` | false | w không thành ư |
+| Phím tắt ngoặc | `BracketShortcut` | false | [ ] → ơ ư |
+| Phụ âm ngoại lai | `AllowForeignConsonants` | false | f,j,w,z làm phụ âm |
+
+### Gõ tắt
+
+Shortcuts được lưu dưới dạng array trong UserDefaults key `Shortcuts`:
+
+```swift
+// Thêm shortcut qua code
+Settings.shared.addShortcut(trigger: "vn", replacement: "Việt Nam")
+Settings.shared.addShortcut(trigger: "->", replacement: "→")
+Settings.shared.addShortcut(trigger: "--danger", replacement: "--dangerously-skip-permissions")
+
+// Xóa shortcut
+Settings.shared.removeShortcut(trigger: "vn")
+```
+
+### Thay đổi settings từ Terminal
+
+```bash
+# Đổi sang VNI
+defaults write vn.vikey.inputmethod InputMethod -int 1
+
+# Bật phụ âm ngoại lai (f,j,w,z)
+defaults write vn.vikey.inputmethod AllowForeignConsonants -bool true
+
+# Xem tất cả settings
+defaults read vn.vikey.inputmethod
+```
 
 ## Cấu trúc dự án
 

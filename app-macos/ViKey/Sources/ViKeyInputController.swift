@@ -117,19 +117,7 @@ class ViKeyInputController: IMKInputController {
 
     /// Load settings from UserDefaults
     private func loadSettings() {
-        let defaults = UserDefaults.standard
-
-        // Input method (default: Telex)
-        let method = defaults.integer(forKey: "InputMethod")
-        bridge.setMethod(InputMethod(rawValue: UInt8(method)) ?? .telex)
-
-        // Options
-        bridge.setModernTone(defaults.bool(forKey: "ModernTone"))
-        bridge.setEscRestore(defaults.bool(forKey: "EscRestore"))
-        bridge.setSkipWShortcut(defaults.bool(forKey: "SkipWShortcut"))
-        bridge.setBracketShortcut(defaults.bool(forKey: "BracketShortcut"))
-        bridge.setFreeTone(defaults.bool(forKey: "FreeTone"))
-        bridge.setEnglishAutoRestore(defaults.bool(forKey: "EnglishAutoRestore"))
-        bridge.setAutoCapitalize(defaults.bool(forKey: "AutoCapitalize"))
+        // Use Settings singleton to apply all settings
+        Settings.shared.applyAll()
     }
 }

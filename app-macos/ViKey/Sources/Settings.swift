@@ -25,6 +25,8 @@ class Settings {
         static let englishAutoRestore = "EnglishAutoRestore"
         static let autoCapitalize = "AutoCapitalize"
         static let enabled = "Enabled"
+        static let allowForeignConsonants = "AllowForeignConsonants"  // f,j,w,z as consonants
+        static let shortcuts = "Shortcuts"  // Text shortcuts array
     }
 
     // MARK: - Properties
@@ -103,6 +105,52 @@ class Settings {
         }
     }
 
+    var allowForeignConsonants: Bool {
+        get { defaults.bool(forKey: Keys.allowForeignConsonants) }
+        set {
+            defaults.set(newValue, forKey: Keys.allowForeignConsonants)
+            RustBridge.shared.setAllowForeignConsonants(newValue)
+        }
+    }
+
+    // MARK: - Shortcuts
+
+    /// Get all text shortcuts as array of (trigger, replacement) tuples
+    var shortcuts: [(String, String)] {
+        get {
+            guard let array = defaults.array(forKey: Keys.shortcuts) as? [[String]] else {
+                return []
+            }
+            return array.compactMap { pair in
+                guard pair.count == 2 else { return nil }
+                return (pair[0], pair[1])
+            }
+        }
+        set {
+            let array = newValue.map { [$0.0, $0.1] }
+            defaults.set(array, forKey: Keys.shortcuts)
+            // Sync to Rust engine
+            RustBridge.shared.clearShortcuts()
+            for (trigger, replacement) in newValue {
+                RustBridge.shared.addShortcut(trigger: trigger, replacement: replacement)
+            }
+        }
+    }
+
+    func addShortcut(trigger: String, replacement: String) {
+        var current = shortcuts
+        // Remove existing if any
+        current.removeAll { $0.0 == trigger }
+        current.append((trigger, replacement))
+        shortcuts = current
+    }
+
+    func removeShortcut(trigger: String) {
+        var current = shortcuts
+        current.removeAll { $0.0 == trigger }
+        shortcuts = current
+    }
+
     // MARK: - Initialization
 
     private init() {
@@ -119,7 +167,9 @@ class Settings {
             Keys.freeTone: false,
             Keys.englishAutoRestore: true,
             Keys.autoCapitalize: false,
-            Keys.enabled: true
+            Keys.enabled: true,
+            Keys.allowForeignConsonants: false,
+            Keys.shortcuts: [] as [[String]]
         ])
     }
 
@@ -133,6 +183,13 @@ class Settings {
         RustBridge.shared.setFreeTone(freeTone)
         RustBridge.shared.setEnglishAutoRestore(englishAutoRestore)
         RustBridge.shared.setAutoCapitalize(autoCapitalize)
+        RustBridge.shared.setAllowForeignConsonants(allowForeignConsonants)
         RustBridge.shared.setEnabled(enabled)
+
+        // Load shortcuts to Rust engine
+        RustBridge.shared.clearShortcuts()
+        for (trigger, replacement) in shortcuts {
+            RustBridge.shared.addShortcut(trigger: trigger, replacement: replacement)
+        }
     }
 }

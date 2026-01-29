@@ -108,6 +108,47 @@ ibus-setup
 ibus restart
 ```
 
+## Cấu hình
+
+ViKey lưu cài đặt tại `~/.config/vikey/config.json`. File này được tự động tạo khi chạy lần đầu.
+
+### Cài đặt có sẵn
+
+```json
+{
+  "enabled": true,
+  "method": 0,                    // 0=Telex, 1=VNI
+  "modern_tone": true,            // Bỏ dấu kiểu mới (hoà vs hòa)
+  "esc_restore": true,            // ESC khôi phục ASCII
+  "english_auto_restore": true,   // Tự động khôi phục từ tiếng Anh
+  "auto_capitalize": false,       // Tự động viết hoa
+  "free_tone": false,             // Bỏ dấu tự do
+  "skip_w_shortcut": false,       // Bỏ qua phím tắt w
+  "bracket_shortcut": false,      // [ ] thay cho ơ ư
+  "allow_foreign_consonants": false, // Cho phép f,j,w,z làm phụ âm
+  "shortcuts": [
+    {"trigger": "vn", "replacement": "Việt Nam"},
+    {"trigger": "->", "replacement": "→"}
+  ]
+}
+```
+
+### Gõ tắt
+
+Thêm gõ tắt vào `shortcuts` array trong config.json:
+
+```json
+"shortcuts": [
+  {"trigger": "vn", "replacement": "Việt Nam"},
+  {"trigger": "hn", "replacement": "Hà Nội"},
+  {"trigger": "hcm", "replacement": "Hồ Chí Minh"},
+  {"trigger": "->", "replacement": "→"},
+  {"trigger": "=>", "replacement": "⇒"},
+  {"trigger": ":)", "replacement": "😊"},
+  {"trigger": "--danger", "replacement": "--dangerously-skip-permissions"}
+]
+```
+
 ## Sử dụng
 
 | Phím tắt | Chức năng |
@@ -155,7 +196,8 @@ ibus restart
 app-linux/
 ├── src/
 │   ├── main.rs           # IBus engine entry point
-│   └── keymap.rs         # Linux → macOS keycode mapping
+│   ├── keymap.rs         # Linux → macOS keycode mapping
+│   └── settings.rs       # Settings persistence (~/.config/vikey/)
 ├── data/
 │   └── vikey.xml         # IBus component descriptor
 ├── lib/

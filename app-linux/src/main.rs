@@ -11,12 +11,18 @@ use std::ffi::CString;
 use std::os::raw::c_char;
 
 mod keymap;
+mod settings;
+
+pub use settings::Settings;
 
 // Re-export vikey_core FFI functions
 pub use vikey_core::{
     ime_init, ime_key_ext, ime_free, ime_method, ime_enabled,
     ime_modern, ime_esc_restore, ime_english_auto_restore,
     ime_clear, ime_clear_all,
+    ime_auto_capitalize, ime_free_tone, ime_skip_w_shortcut,
+    ime_bracket_shortcut, ime_allow_foreign_consonants,
+    ime_add_shortcut, ime_remove_shortcut, ime_clear_shortcuts,
 };
 
 // IBus C FFI bindings (minimal)
@@ -32,17 +38,24 @@ extern "C" {
 
 /// Main entry point for IBus engine
 fn main() {
-    println!("ViKey IBus Engine starting...");
+    println!("ViKey IBus Engine v1.3.1 starting...");
 
     // Initialize vikey_core
     unsafe {
         ime_init();
-        ime_method(0); // Telex default
-        ime_enabled(true);
-        ime_modern(true);
-        ime_esc_restore(true);
-        ime_english_auto_restore(true);
     }
+
+    // Load and apply settings from config file
+    let settings = Settings::load();
+    settings.apply();
+
+    println!("  Method: {}", if settings.method == 0 { "Telex" } else { "VNI" });
+    println!("  Modern tone: {}", settings.modern_tone);
+    println!("  ESC restore: {}", settings.esc_restore);
+    println!("  English auto-restore: {}", settings.english_auto_restore);
+    println!("  Foreign consonants: {}", settings.allow_foreign_consonants);
+    println!("  Shortcuts: {} loaded", settings.shortcuts.len());
+    println!("  Config: {:?}", Settings::config_path());
 
     // Initialize IBus
     unsafe {
@@ -70,7 +83,6 @@ fn main() {
         println!("ViKey IBus engine started successfully!");
         println!("Engine name: vikey");
         println!("Language: Vietnamese (vi)");
-        println!("Methods: Telex, VNI");
 
         // Run IBus main loop
         ibus_main();

@@ -2,15 +2,25 @@
 
 Các thay đổi đáng chú ý của dự án.
 
-## [1.3.1] - 2026-01-28
+## [1.3.1] - 2026-01-29
 
-### Thêm mới
+### Windows
 - Cho phép phụ âm ngoại lai F, J, W, Z (tuỳ chọn trong cài đặt)
 - Double-click tray icon mở Cài đặt thay vì toggle chế độ gõ
-
-### Sửa lỗi
 - Sửa lỗi gõ tắt thừa space/dấu gạch (sử dụng clipboard mode cho shortcuts dài)
 - Cải thiện timing cho shortcut expansion
+- Sửa lỗi Settings dialog không hiển thị trên taskbar
+
+### macOS
+- Thêm hỗ trợ phụ âm ngoại lai (f,j,w,z) trong Settings
+- Thêm hỗ trợ gõ tắt (shortcuts) lưu trong UserDefaults
+- Cập nhật Settings.swift để đồng bộ với Rust engine
+
+### Linux
+- Thêm module settings.rs lưu cài đặt vào ~/.config/vikey/config.json
+- Hỗ trợ đầy đủ các tuỳ chọn: modern_tone, esc_restore, english_auto_restore, auto_capitalize, free_tone, skip_w_shortcut, bracket_shortcut, allow_foreign_consonants
+- Hỗ trợ gõ tắt (shortcuts) trong config file
+- Cập nhật version lên 1.3.1
 
 ## [1.3.0] - 2026-01-28
 
