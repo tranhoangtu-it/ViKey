@@ -2,14 +2,28 @@
 
 Các thay đổi đáng chú ý của dự án.
 
-## [1.3.2] - 2026-01-29
+## [1.3.2] - 2026-02-03
 
 ### Windows
-- Thêm chức năng xuất/nhập gõ tắt riêng (Export/Import Shortcuts)
-- Tạo cửa sổ Gõ tắt riêng biệt (giống EVKey)
-- Giao diện nhỏ gọn như Unikey/EVKey (font MS Shell Dlg 8pt)
-- Thêm nút truy cập nhanh trong Cài đặt (Gõ tắt, Loại trừ, Chuyển mã)
-- Hỗ trợ DPI awareness cho các màn hình có độ phân giải cao
+- **Dark mode**: Tự động chuyển đổi giao diện sáng/tối theo hệ thống
+- **Giao diện EVKey-style**: Bố cục 2 cột checkbox, các nút tiện ích ở dưới cùng
+- **Chống mở nhiều cửa sổ**: Single-instance protection khi click nhanh tray icon
+- **Tuỳ chọn bật/tắt gõ tắt**: Checkbox "Cho phép gõ tắt" trong cài đặt
+- **Cửa sổ Gõ tắt**: Chỉ 2 cột (Tắt | Thay thế), các nút trên cùng hàng
+- Xuất/nhập gõ tắt riêng (Export/Import Shortcuts)
+- Hỗ trợ DPI awareness cho màn hình độ phân giải cao
+
+### Core
+- Thêm `shortcuts_enabled` setting và `ime_shortcuts_enabled()` FFI
+- Cập nhật version lên 1.3.2
+
+### macOS
+- Cập nhật version lên 1.3.2
+- Thêm `shortcutsEnabled` setting với RustBridge integration
+
+### Linux
+- Cập nhật version lên 1.3.2
+- Thêm `shortcuts_enabled` setting với JSON serialization
 
 ## [1.3.1] - 2026-01-29
 
