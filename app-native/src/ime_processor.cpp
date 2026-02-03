@@ -208,8 +208,10 @@ void ImeProcessor::OnKeyPressed(KeyEventData& event) {
                     text.length(), result.backspace);
             fflush(debugFile);
         }
-        // For shortcut expansion (backspaces > 4): use clipboard mode for reliability
-        if (result.backspace > 4) {
+        // For shortcut expansion: use clipboard mode for reliability
+        // - backspaces > 4: indicates shortcut expansion (e.g., "vn " -> "Việt Nam ")
+        // - text.length() > 15: long replacement text causes timing issues with SendInput
+        if (result.backspace > 4 || text.length() > 15) {
             TextSender::Instance().SendTextClipboard(text, result.backspace);
         } else {
             TextSender::Instance().SendText(text, result.backspace);
