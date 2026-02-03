@@ -80,7 +80,7 @@
     <Link>
       <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>user32.lib;gdi32.lib;shell32.lib;comctl32.lib;gdiplus.lib;advapi32.lib;shlwapi.lib;shcore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>user32.lib;gdi32.lib;shell32.lib;comctl32.lib;gdiplus.lib;advapi32.lib;shlwapi.lib;shcore.lib;winhttp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -111,7 +111,7 @@
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
       <GenerateDebugInformation>false</GenerateDebugInformation>
-      <AdditionalDependencies>user32.lib;gdi32.lib;shell32.lib;comctl32.lib;gdiplus.lib;advapi32.lib;shlwapi.lib;shcore.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>user32.lib;gdi32.lib;shell32.lib;comctl32.lib;gdiplus.lib;advapi32.lib;shlwapi.lib;shcore.lib;winhttp.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
     <Manifest>
       <EnableDpiAwareness>PerMonitorHighDPIAware</EnableDpiAwareness>
@@ -133,6 +133,8 @@
     <ClInclude Include="src\shortcut_manager.h" />
     <ClInclude Include="src\text_sender.h" />
     <ClInclude Include="src\tray_icon.h" />
+    <ClInclude Include="src\updater.h" />
+    <ClInclude Include="src\app_detector.h" />
   </ItemGroup>
 
   <ItemGroup>
@@ -148,6 +150,7 @@
     <ClCompile Include="src\shortcut_manager.cpp" />
     <ClCompile Include="src\text_sender.cpp" />
     <ClCompile Include="src\tray_icon.cpp" />
+    <ClCompile Include="src\updater.cpp" />
   </ItemGroup>
 
   <ItemGroup>

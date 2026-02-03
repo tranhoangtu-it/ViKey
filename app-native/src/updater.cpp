@@ -11,8 +11,31 @@
 
 #pragma comment(lib, "winhttp.lib")
 
-// External Rust FFI function for version comparison
-extern "C" int version_has_update(const char* current, const char* latest);
+// Function pointer for version comparison from core.dll
+using FnVersionHasUpdate = int(*)(const char*, const char*);
+static FnVersionHasUpdate g_versionHasUpdate = nullptr;
+static HMODULE g_hCoreDll = nullptr;
+
+// Load version comparison function from core.dll
+static bool LoadVersionFunction() {
+    if (g_versionHasUpdate) return true;
+
+    // Get exe directory
+    wchar_t exePath[MAX_PATH];
+    GetModuleFileNameW(nullptr, exePath, MAX_PATH);
+    std::wstring exeDir(exePath);
+    size_t lastSlash = exeDir.find_last_of(L"\\/");
+    if (lastSlash != std::wstring::npos) {
+        exeDir = exeDir.substr(0, lastSlash);
+    }
+
+    std::wstring dllPath = exeDir + L"\\core.dll";
+    g_hCoreDll = LoadLibraryW(dllPath.c_str());
+    if (!g_hCoreDll) return false;
+
+    g_versionHasUpdate = (FnVersionHasUpdate)GetProcAddress(g_hCoreDll, "version_has_update");
+    return g_versionHasUpdate != nullptr;
+}
 
 Updater& Updater::Instance() {
     static Updater instance;
@@ -177,8 +200,13 @@ UpdateInfo Updater::ParseReleaseJson(const std::string& json) {
     info.latestVersion = std::wstring(tagName.begin(), tagName.end());
 
     // Check if update is available using Rust FFI
-    int hasUpdate = version_has_update(VIKEY_VERSION_A, tagName.c_str());
-    info.available = (hasUpdate == 1);
+    if (LoadVersionFunction() && g_versionHasUpdate) {
+        int hasUpdate = g_versionHasUpdate(VIKEY_VERSION_A, tagName.c_str());
+        info.available = (hasUpdate == 1);
+    } else {
+        // Fallback: simple string comparison
+        info.available = (tagName > std::string(VIKEY_VERSION_A));
+    }
 
     // Find html_url for download
     size_t htmlUrlPos = json.find("\"html_url\"");
@@ -201,8 +229,9 @@ UpdateInfo Updater::ParseReleaseJson(const std::string& json) {
         size_t bodyQuoteEnd = json.find('"', bodyQuoteStart + 1);
 
         if (bodyQuoteStart != std::string::npos && bodyQuoteEnd != std::string::npos) {
-            std::string body = json.substr(bodyQuoteStart + 1,
-                std::min(bodyQuoteEnd - bodyQuoteStart - 1, (size_t)200));
+            size_t maxLen = 200;
+            size_t bodyLen = bodyQuoteEnd - bodyQuoteStart - 1;
+            std::string body = json.substr(bodyQuoteStart + 1, bodyLen < maxLen ? bodyLen : maxLen);
 
             // Convert escaped newlines
             size_t pos = 0;
@@ -220,6 +249,9 @@ UpdateInfo Updater::ParseReleaseJson(const std::string& json) {
 }
 
 bool Updater::IsNewerVersion(const char* current, const char* latest) {
-    int result = version_has_update(current, latest);
-    return result == 1;
+    if (LoadVersionFunction() && g_versionHasUpdate) {
+        return g_versionHasUpdate(current, latest) == 1;
+    }
+    // Fallback: simple string comparison
+    return std::string(latest) > std::string(current);
 }
