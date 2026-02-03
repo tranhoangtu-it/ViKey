@@ -2,6 +2,12 @@
 
 Các thay đổi đáng chú ý của dự án.
 
+## [1.3.3] - 2026-02-03
+
+### Sửa lỗi
+- **Gõ tắt văn bản dài**: Sửa lỗi gõ tắt có văn bản thay thế dài (>15 ký tự) bị lỗi spacing
+- Tự động sử dụng clipboard mode cho văn bản thay thế dài để đảm bảo độ tin cậy
+
 ## [1.3.2] - 2026-02-03
 
 ### Windows
