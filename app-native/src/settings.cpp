@@ -302,6 +302,9 @@ static void WriteShortcutsJsonArray(std::wstringstream& ss, const std::vector<Te
     }
 }
 
+// Forward declaration (defined after ExportShortcutsToJson)
+static std::wstring ExtractJsonString(const std::wstring& json, const std::wstring& key);
+
 static std::vector<TextShortcut> ParseShortcutsJsonArray(const std::wstring& json, const std::wstring& key) {
     std::vector<TextShortcut> result;
     size_t shortcutsPos = json.find(L"\"" + key + L"\":");
