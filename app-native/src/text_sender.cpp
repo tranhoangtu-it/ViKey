@@ -175,7 +175,10 @@ void TextSender::SendTextClipboard(const std::wstring& text, int backspaces) {
         Sleep(50);
         if (OpenClipboard(nullptr)) {
             EmptyClipboard();
-            SetClipboardData(CF_UNICODETEXT, hSaved);
+            if (!SetClipboardData(CF_UNICODETEXT, hSaved)) {
+                // On failure, ownership of hSaved remains with the caller
+                GlobalFree(hSaved);
+            }
             CloseClipboard();
         } else {
             GlobalFree(hSaved);
