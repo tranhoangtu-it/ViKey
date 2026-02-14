@@ -72,7 +72,9 @@ void Updater::CheckForUpdatesAsync(HWND hWnd, std::function<void(const UpdateInf
         // Verify window still exists before posting message
         if (capturedWnd && IsWindow(capturedWnd)) {
             UpdateInfo* pInfo = new UpdateInfo(info);
-            PostMessage(capturedWnd, WM_UPDATE_CHECK_COMPLETE, 0, (LPARAM)pInfo);
+            if (!PostMessage(capturedWnd, WM_UPDATE_CHECK_COMPLETE, 0, (LPARAM)pInfo)) {
+                delete pInfo;
+            }
         }
     }).detach();
 }
