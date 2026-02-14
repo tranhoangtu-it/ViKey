@@ -59,6 +59,8 @@ jobs:
           ViKey/Sources/Settings.swift
 
         cp ViKey/Resources/Info.plist build/ViKey.app/Contents/
+        cp ViKey/Resources/AppIcon.icns build/ViKey.app/Contents/Resources/ 2>/dev/null || true
+        cp ViKey/Resources/ViKey.tiff build/ViKey.app/Contents/Resources/ 2>/dev/null || true
 
     - name: Code sign
       run: codesign --force --sign - app-macos/build/ViKey.app

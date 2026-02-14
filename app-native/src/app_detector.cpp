@@ -140,11 +140,8 @@ int AppDetector::GetAppEncoding(const std::wstring& app, int defaultEncoding) {
     return defaultEncoding;
 }
 
-// Max app states to prevent unbounded registry growth
-constexpr DWORD MAX_APP_STATES = 100;
-
 void AppDetector::Load() {
-    // Load app states from registry (limited to MAX_APP_STATES)
+    // Load all app states from registry
     HKEY hKey;
     if (RegOpenKeyExW(HKEY_CURRENT_USER, APP_STATES_PATH, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
         wchar_t valueName[256];
@@ -154,7 +151,7 @@ void AppDetector::Load() {
         DWORD type;
         DWORD index = 0;
 
-        while (index < MAX_APP_STATES) {
+        for (;;) {
             valueNameSize = 256;
             valueDataSize = sizeof(valueData);
             LONG result = RegEnumValueW(hKey, index++, valueName, &valueNameSize,
@@ -167,7 +164,7 @@ void AppDetector::Load() {
         RegCloseKey(hKey);
     }
 
-    // Load app encodings from registry (limited to MAX_APP_STATES)
+    // Load all app encodings from registry
     if (RegOpenKeyExW(HKEY_CURRENT_USER, APP_ENCODINGS_PATH, 0, KEY_READ, &hKey) == ERROR_SUCCESS) {
         wchar_t valueName[256];
         DWORD valueNameSize;
@@ -176,7 +173,7 @@ void AppDetector::Load() {
         DWORD type;
         DWORD index = 0;
 
-        while (index < MAX_APP_STATES) {
+        for (;;) {
             valueNameSize = 256;
             valueDataSize = sizeof(valueData);
             LONG result = RegEnumValueW(hKey, index++, valueName, &valueNameSize,
